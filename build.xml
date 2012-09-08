@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bash-tools" default="build">
+
+    <property file="build.properties"/>
+
+    <target name="build" depends="cleanup,readme" description="Build distribution of bash-tools">
+        <echo message="'bash-tools' distribution build complete." level="info"/>
+    </target>
+
+    <target name="cleanup" description="Delete distribution directory">
+        <delete dir="${distribution.dir}"/>
+    </target>
+
+    <target name="readme" description="Includes README file with distribution">
+        <copy file="${readme.file}" tofile="${distribution.dir}${file.separator}${readme.file}"/>
+    </target>
+
+</project>
