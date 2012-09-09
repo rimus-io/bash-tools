@@ -3,9 +3,11 @@
 
     <property file="build.properties"/>
 
-    <target name="build" depends="cleanup,readme" description="Build distribution of bash-tools">
+    <target name="build" depends="cleanup,readme,version,add-packages" description="Build distribution of bash-tools">
         <echo message="'bash-tools' distribution build complete." level="info"/>
     </target>
+
+    <target name="add-packages" depends="add-installer" description="Add all packages"/>
 
     <target name="cleanup" description="Delete distribution directory">
         <delete dir="${distribution.dir}"/>
@@ -13,6 +15,21 @@
 
     <target name="readme" description="Includes README file with distribution">
         <copy file="${readme.file}" tofile="${distribution.dir}${file.separator}${readme.file}"/>
+    </target>
+
+    <target name="version" description="Vrite version and release details">
+        <tstamp>
+            <format property="date" pattern="dd MMMM yyyy" locale="en"/>
+        </tstamp>
+        <tstamp>
+            <format property="time" pattern="HH:mm:ss" locale="en"/>
+        </tstamp>
+        <echo file="${distribution.dir}${file.separator}${root.package}${file.separator}${version.file}">${version.number}${line.separator}${date}${line.separator}${time}${line.separator}</echo>
+    </target>
+
+    <target name="add-installer">
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${installer.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${installer.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${bootstrap.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}"/>
     </target>
 
 </project>
