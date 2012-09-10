@@ -1,18 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="bash-tools" default="build">
 
+
+    <!-- Include properties file -->
     <property file="build.properties"/>
 
-    <target name="build" depends="cleanup,readme" description="Build distribution of bash-tools">
+
+    <!-- Main build task -->
+    <target name="build" depends="cleanup,readme,version,add-packages" description="Build distribution of bash-tools">
         <echo message="'bash-tools' distribution build complete." level="info"/>
     </target>
 
+
+    <!-- Add all packages in 'depends' list here -->
+    <target name="add-packages" depends="installer,ziri" description="Add all packages"/>
+
+
+    <!-- Deletes distribution directory -->
     <target name="cleanup" description="Delete distribution directory">
         <delete dir="${distribution.dir}"/>
     </target>
 
+
+    <!-- Includes README file inside distribution directory -->
     <target name="readme" description="Includes README file with distribution">
         <copy file="${readme.file}" tofile="${distribution.dir}${file.separator}${readme.file}"/>
     </target>
+
+
+    <!-- Generates version info file inside distribution directory -->
+    <target name="version" description="Write version and release details">
+        <tstamp>
+            <format property="date" pattern="dd MMMM yyyy" locale="en"/>
+        </tstamp>
+        <tstamp>
+            <format property="time" pattern="HH:mm:ss" locale="en"/>
+        </tstamp>
+        <echo file="${distribution.dir}${file.separator}${root.package}${file.separator}${version.file}">${version.number}${line.separator}${date}${line.separator}${time}${line.separator}</echo>
+    </target>
+
+
+    <!-- Installer -->
+    <target name="installer">
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${installer.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${installer.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${bootstrap.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${context.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${context.file}"/>
+    </target>
+
+
+    <!-- MODULES -->
+
+
+    <!-- ziri -->
+    <target name="ziri">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${ziri.source.dir}">
+            <fileset dir="${source.dir}${file.separator}${ziri.source.dir}"/>
+        </copy>
+    </target>
+
 
 </project>
