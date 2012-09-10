@@ -8,31 +8,27 @@
 
 # General vars
 step="Action:"
-
-
-# Getting timestamp
 timestamp=$(date "+%Y-%m-%d_%H-%M-%S")
 
 
 # Getting current directory
 root_location="$(pwd)/$(dirname $0)"
+version_info_file="$root_location/version.info"
 
 
 # Prevent installation if it has been performed already
 if [ -f "$root_location/st" ]
 then
     echo "You already have 'bash-tools' installed!"
-    exit 0
-else
-    echo "" > "$root_location/st"
+    exit 1 # Exit with error
 fi
 
 
-# Setting version details from 'version' file if it exists
+# Setting version details from 'version.info' file if it exists
 version_info=
 release_date_info=
 release_time_info=
-if [ -f "$root_location/version" ]
+if [ -f "$version_info_file" ]
 then
     index=0
     while read line
@@ -50,7 +46,7 @@ then
             release_time_info=$line
         fi
         index=$((index+1))
-    done < "$root_location/version"
+    done < "$version_info_file"
 fi
 
 
@@ -60,7 +56,7 @@ echo "
 
 Installing:     bash-tools"
 
-if [ -f "$root_location/version" ]
+if [ -f "$version_info_file" ]
 then
     echo ""
     echo "Version:        $version_info"
@@ -73,6 +69,7 @@ echo "
 "
 
 
+# Determine which startup file to use
 # File selection sequence here follows the same pattern as shell does on login
 bash_file=
 if [ -f ~/.bash_profile ]
@@ -87,7 +84,7 @@ else
         then
             bash_file=.profile
         else
-            # Create startup file
+            # No startup files found - create startup file
             echo "#!/bin/sh" > ~/.bash_profile
             bash_file=.bash_profile
             echo "$step No startup file found - '.bash_profile' file has been created in your user directory."
@@ -111,9 +108,16 @@ echo "$bootstrap_patch" >> ~/$bash_file
 echo "$step Patched up '$bash_file' file to include 'bash-tools' on login."
 
 
+# Write status file to mark successful installation
+echo "" > "$root_location/st"
+
+
 # Print out success message
 echo "
-Installation complete. Enjoy!
+Installation complete!
+NOTE: You will have to re-login for changes to take effect.
+
+Enjoy!
 
 --------------------------------
 "
