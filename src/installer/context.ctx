@@ -1,10 +1,16 @@
 #--------------------------------------------
 # 'develop' flag (true|false)
 #--------------------------------------------
+
 develop=true
 
 
 #--------------------------------------------
 # Module declarations
 #--------------------------------------------
+
+# Demo module
 ziri
+
+# Executes actions on 'cd' command if '.cdrc' file is found
+cdrc

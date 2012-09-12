@@ -12,8 +12,8 @@
     </target>
 
 
-    <!-- Add all packages in 'depends' list here -->
-    <target name="add-packages" depends="installer,ziri" description="Add all packages"/>
+    <!-- Add all core packages in 'depends' list here -->
+    <target name="add-packages" depends="installer,modules" description="Add all core packages"/>
 
 
     <!-- Deletes distribution directory -->
@@ -49,12 +49,20 @@
 
 
     <!-- MODULES -->
-
+    <target name="modules" depends="ziri,cdrc" description="Declare all modules to be included here"/>
 
     <!-- ziri -->
     <target name="ziri">
         <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${ziri.source.dir}">
             <fileset dir="${source.dir}${file.separator}${ziri.source.dir}"/>
+        </copy>
+    </target>
+
+
+    <!-- cdrc -->
+    <target name="cdrc">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${cdrc.source.dir}">
+            <fileset dir="${source.dir}${file.separator}${cdrc.source.dir}"/>
         </copy>
     </target>
 
