@@ -22,8 +22,8 @@
     </target>
 
 
-    <!-- Includes README file inside distribution directory -->
-    <target name="readme" description="Includes README file with distribution">
+    <!-- Includes README file inside distribution directory (does not execute in DEVELOP build) -->
+    <target name="readme" description="Includes README file with distribution" unless="DEVELOP">
         <copy file="${readme.file}" tofile="${distribution.dir}${file.separator}${readme.file}"/>
     </target>
 
