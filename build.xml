@@ -49,7 +49,7 @@
 
 
     <!-- MODULES -->
-    <target name="modules" depends="ziri,cdaction" description="Declare all modules to be included here"/>
+    <target name="modules" depends="ziri,cdrc" description="Declare all modules to be included here"/>
 
     <!-- ziri -->
     <target name="ziri">
@@ -59,10 +59,10 @@
     </target>
 
 
-    <!-- cdaction -->
-    <target name="cdaction">
-        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${cdaction.source.dir}">
-            <fileset dir="${source.dir}${file.separator}${cdaction.source.dir}"/>
+    <!-- cdrc -->
+    <target name="cdrc">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${cdrc.source.dir}">
+            <fileset dir="${source.dir}${file.separator}${cdrc.source.dir}"/>
         </copy>
     </target>
 

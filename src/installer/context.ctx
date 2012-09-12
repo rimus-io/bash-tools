@@ -11,9 +11,6 @@ develop=true
 
 # Demo module
 ziri
-<<<<<<< HEAD
 
 # Executes actions on 'cd' command if '.cdrc' file is found
-cdaction
-=======
->>>>>>> develop
+cdrc
