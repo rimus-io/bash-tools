@@ -11,6 +11,30 @@ step="Action:"
 timestamp=$(date "+%Y-%m-%d_%H-%M-%S")
 
 
+# Verbose method to control 'echo'
+verbose=false
+OPTIND=1 #Absolutely vital to reset this to 1
+while getopts ":v" OPTION
+do
+    case $OPTION in
+        v)
+            verbose=true
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG"
+            return # Not 'exit' as that would kick you out of shell
+            ;;
+    esac
+done
+
+function _verbose() {
+    if $verbose
+    then
+        echo "${@}"
+    fi
+}
+
+
 # Getting current directory
 root_location="$(pwd)/$(dirname $0)"
 version_info_file="$root_location/version.info"
@@ -19,7 +43,7 @@ version_info_file="$root_location/version.info"
 # Prevent installation if it has been performed already
 if [ -f "$root_location/st" ]
 then
-    echo "You already have 'bash-tools' installed!"
+    _verbose "You already have 'bash-tools' installed!"
     exit 1 # Exit with error
 fi
 
@@ -51,20 +75,20 @@ fi
 
 
 # Print out details
-echo "
+_verbose "
 ================================
 
 Installing:     bash-tools"
 
 if [ -f "$version_info_file" ]
 then
-    echo ""
-    echo "Version:        $version_info"
-    echo "Release date:   $release_date_info"
-    echo "Release time:   $release_time_info"
+    _verbose ""
+    _verbose "Version:        $version_info"
+    _verbose "Release date:   $release_date_info"
+    _verbose "Release time:   $release_time_info"
 fi
 
-echo "
+_verbose "
 ================================
 "
 
@@ -87,7 +111,7 @@ else
             # No startup files found - create startup file
             echo "#!/bin/sh" > ~/.bash_profile
             bash_file=.bash_profile
-            echo "$step No startup file found - '.bash_profile' file has been created in your user directory."
+            _verbose "$step No startup file found - '.bash_profile' file has been created in your user directory."
         fi
     fi
 fi
@@ -96,7 +120,7 @@ fi
 # Backing up startup file
 bash_file_backup="${bash_file}.bash-tools-SAVED.$timestamp.backup"
 sudo cp ~/$bash_file ~/$bash_file_backup
-echo "$step Backed up '$bash_file' as '$bash_file_backup'."
+_verbose "$step Backed up '$bash_file' as '$bash_file_backup'."
 
 
 # Patch startup file to include bash-tools on login
@@ -105,7 +129,7 @@ bootstrap_patch="
 # Including 'bash-tools'
 source $bootstrap_file"
 echo "$bootstrap_patch" >> ~/$bash_file
-echo "$step Patched up '$bash_file' file to include 'bash-tools' on login."
+_verbose "$step Patched up '$bash_file' file to include 'bash-tools' on login."
 
 
 # Write status file to mark successful installation
@@ -113,7 +137,7 @@ echo "" > "$root_location/st"
 
 
 # Print out success message
-echo "
+_verbose "
 Installation complete!
 NOTE: You will have to re-login for changes to take effect.
 

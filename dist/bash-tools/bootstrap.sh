@@ -65,9 +65,9 @@ fi
 for module in ${module_list[@]}
 do
     # Only register aliases if the module can be found
-    if [ -f $BASHTOOLS_HOME/$module/$module.sh ]
+    if [[ -d "$BASHTOOLS_HOME/$module" && -f "$BASHTOOLS_HOME/$module/hook.sh" ]]
     then
-        alias $module="source $BASHTOOLS_HOME/$module/$module.sh"
+        source "$BASHTOOLS_HOME/$module/hook.sh" $module
     fi
 done
 unset module
