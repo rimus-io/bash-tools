@@ -68,6 +68,11 @@ do
     if [[ -d "$BASHTOOLS_HOME/$module" && -f "$BASHTOOLS_HOME/$module/hook.sh" ]]
     then
         source "$BASHTOOLS_HOME/$module/hook.sh" $module
+        # Enable autocompletion script if provided
+        if [ -f "$BASHTOOLS_HOME/$module/autocomplete.sh" ]
+        then
+            source "$BASHTOOLS_HOME/$module/autocomplete.sh"
+        fi
     fi
 done
 unset module
