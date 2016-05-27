@@ -7,10 +7,22 @@ develop=true
 
 #--------------------------------------------
 # Module declarations
+#
+# To auto source on bootstrap, add '_1'
+# to the end of module name
 #--------------------------------------------
 
 # Demo module
-ziri
+#ziri
+
 
 # Executes actions on 'cd' command if '.cdrc' file is found
-cdrc
+#cdrc
+
+
+# A util to manage command line shortcut navigation
+cdalias_1
+
+#testmodule
+
+

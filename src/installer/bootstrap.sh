@@ -37,7 +37,7 @@ do
                     exit 1
                 fi
             else
-                module_list[$params_index]=$param
+                module_list[$params_index]="${param}"
                 params_index=$(( params_index + 1 ))
             fi
         fi
@@ -47,6 +47,10 @@ done < "$BASHTOOLS_HOME/context.ctx"
 unset param
 unset params_index
 
+function btr() {
+    sh dev_clean_build.sh -fc
+}
+
 
 # Check if installation has been performed before proceeding, but allow execution if in development mode
 if [ ! -f "$BASHTOOLS_HOME/st" ]
@@ -55,23 +59,31 @@ then
     then
         echo "INFO: 'bash-tools' - Running in development mode."
     else
+        unset btr
         echo "Sorry, you have to install 'bash-tools' first."
         exit 1 # Exit with error
     fi
 fi
 
-
 # Register modules
 for module in ${module_list[@]}
 do
+    module_name=${module/"_0"/""}
+    module_name=${module_name/"_1"/""}
+    auto_source=false
     # Only register aliases if the module can be found
-    if [[ -d "$BASHTOOLS_HOME/$module" && -f "$BASHTOOLS_HOME/$module/hook.sh" ]]
+    if [[ -d "$BASHTOOLS_HOME/$module_name" && -f "$BASHTOOLS_HOME/$module_name/hook.sh" ]]
     then
-        source "$BASHTOOLS_HOME/$module/hook.sh" $module
+        if [ "${module:$(( ${#module} - 1 )):${#module}}" = "1" ]
+            then
+                auto_source=true
+        fi
+        source "$BASHTOOLS_HOME/$module_name/hook.sh" $module_name $auto_source
+        echo "INFO: 'bash-tools' bootstrapping module: $module_name, auto source: $auto_source"
         # Enable autocompletion script if provided
-        if [ -f "$BASHTOOLS_HOME/$module/autocomplete.sh" ]
+        if [ -f "$BASHTOOLS_HOME/$module_name/autocomplete.sh" ]
         then
-            source "$BASHTOOLS_HOME/$module/autocomplete.sh"
+            source "$BASHTOOLS_HOME/$module_name/autocomplete.sh"
         fi
     fi
 done

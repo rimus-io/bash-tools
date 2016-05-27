@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 # Force flag
 force=false
 verbose=false
@@ -28,7 +27,7 @@ The only valid options are:
     f - Forces a clean build.
     c - Clears the terminal window.
 "
-            return # Not 'exit' as that would kick you out of shell
+            exit
             ;;
     esac
 done
@@ -64,17 +63,28 @@ Are you sure you want to continue? (y/n):"
             echo "Quitting development clean build process...
 
 --------------------------------"
-            return # Not 'exit' as that would kick you out of shell
+            exit
         else
             echo "Please type 'y' to continue or 'n' to exit:"
         fi
     done
 fi
 
+# Check if ant exists
+if hash ant 2>/dev/null; then
+    echo "Build tool 'ant' is installed, can proceed"
+else
+    echo "Build tool 'ant' is not installed, cannot proceed"
+    echo "Quitting development clean build process...
+
+--------------------------------"
+    exit
+fi
+
 
 # Removes all '.bash_profile*' files
 echo "Cleaning up..."
-find ~/ -iname ".bash_profile*" -exec rm {} \; -print
+find ~/ -iname ".bash_profile.*" -exec rm -f {} \; -print
 
 
 # Build distribution

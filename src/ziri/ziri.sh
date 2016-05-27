@@ -17,7 +17,11 @@ _MESSAGE_GOOD_BYE="Oh, just leave me alone, sex and the city is about to start..
 
 
 # Ziri speach command
-function _ziri_say() {
+function _ziri_say () {
+
+    # trap keyboard interrupt (control-c)
+    trap return SIGINT
+
     if [ "${@}" ]
     then
         echo "Ziri: ${@}"
@@ -30,7 +34,11 @@ function _ziri_say() {
 
 
 # Main Q&A loop
-function _qa_loop() {
+function _qa_loop () {
+
+    # trap keyboard interrupt (control-c)
+    trap return SIGINT
+
     while [ $_patience_threshold -gt 0 ]
     do
         read question
@@ -53,7 +61,11 @@ function _qa_loop() {
 
 
 # Constructor
-function main() {
+function main () {
+
+    # trap keyboard interrupt (control-c)
+    trap return SIGINT
+
     # Set number of questions to answer
     _patience_threshold=$[ 3 + $[ RANDOM % 6 ]]
 
@@ -75,13 +87,13 @@ function main() {
         _ziri_say "$_MESSAGE_RESPONSE_ONE"
     fi
     echo "$_MESAGE_TYPE_QUESTION"
-
     _qa_loop
 }
 
 
 # Destructor
-function destructor() {
+function destructor () {
+
     # Unset constructor and destructor
     unset main
     unset destructor
@@ -98,9 +110,12 @@ function destructor() {
     # Unset methods
     unset _ziri_say
     unset _qa_loop
-}
 
+    # Reset interrupts
+    trap 'echo -en ""' SIGINT
+}
 
 # Run, then clean up
 main ${@}
 destructor
+
