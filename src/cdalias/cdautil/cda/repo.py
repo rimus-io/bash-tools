@@ -116,7 +116,7 @@ class CdaRepo:
         """
         aliases = []
         for entry in self.data_map.values():
-            if entry["path"] == path:
+            if CdaRepo.append_user_dir(entry["path"]) == CdaRepo.append_user_dir(path):
                 aliases.append(entry["alias"])
         return aliases
 
@@ -139,7 +139,7 @@ class CdaRepo:
         :param alias: alias to check against
         :return: path or None
         """
-        return self.data_map[alias]["path"]
+        return CdaRepo.append_user_dir(self.data_map[alias]["path"])
 
 
 
@@ -159,6 +159,7 @@ class CdaRepo:
 
 
 
+
     @staticmethod
     def is_valid_path(path):
         """
@@ -167,4 +168,30 @@ class CdaRepo:
         :param path: path to validate
         :return: True/False
         """
-        return os.path.isdir(path)
+        return os.path.isdir(CdaRepo.append_user_dir(path))
+
+
+
+    @staticmethod
+    def append_user_dir(path):
+        """
+        Checks if path needs user's home path appended
+
+        :param path: path to check
+        :return: path with user's home appended
+        """
+        if path[0] == "~":
+            path_str = path.replace("~", CdaRepo.get_user_dir())
+        else:
+            path_str = path
+        return path_str
+
+
+    @staticmethod
+    def get_user_dir():
+        """
+        Used to retrieve user's directory
+
+        :return: path to user's home
+        """
+        return os.path.expanduser("~")

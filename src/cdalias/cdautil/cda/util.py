@@ -4,8 +4,10 @@ from repo import *
 
 
 class CdaUtil:
-    def __init__(self, data_file):
+    def __init__(self, data_file,app_name,version):
         self.repo = CdaRepo(data_file)
+        self.app_name = app_name
+        self.version=version
 
 
 
@@ -38,10 +40,18 @@ class CdaUtil:
         :param alias: alias to be used
         :param path: path to be kinked to the alias
         """
-        print_double_line()
+        if not alias:
+            print_project_header(self.app_name,"Create alias: %s"%"missing !!",self.version)
+        else:
+            print_project_header(self.app_name,"Create alias: %s"%alias,self.version)
         # Check if path provided, if not, use current dir
         if path == None:
             path = os.getcwd()
+        # Check if alias is provided
+        if not alias:
+            print_create_no_alias()
+            print_project_footer_fail("Error")
+            return
         # Check if path already has aliases linking to it
         # and warn if it does
         aliases_for_path = self.repo.get_aliases_for_path(path)
@@ -53,14 +63,17 @@ class CdaUtil:
             # If path is not valid abort
             if not self.repo.is_valid_path(path):
                 print_create_path_not_valid(alias, path)
+                print_project_footer_fail("Error")
                 return
             # If path is valid, save
             self.repo.save_alias(alias, path)
             print_create_alias_created(alias, path)
+            print_project_footer_success("Done!")
         # If alias has already been registered, abort
         # and display info
         else:
             print_create_alias_exists(alias, self.repo.get_path_for_alias(alias), path)
+            print_project_footer_fail("Error")
 
 
 
@@ -70,11 +83,14 @@ class CdaUtil:
 
         :param alias: alias to be deleted
         """
+        print_project_header(self.app_name, "Delete alias: %s"%alias, self.version)
         if self.repo.does_alias_exist(alias):
             self.repo.delete_alias(alias)
             print_delete_alias_deleted(alias)
+            print_project_footer_success("Done!")
         else:
             print_delete_alias_not_found(alias)
+            print_project_footer_normal("Sorry...")
 
 
 
@@ -82,4 +98,6 @@ class CdaUtil:
         """
         Lists all registered aliases.
         """
+        print_project_header(self.app_name, "List all aliases", self.version)
         print_list(self.repo.get_all_aliases())
+        print_project_footer_normal("List of all aliases",LIST_ICON)

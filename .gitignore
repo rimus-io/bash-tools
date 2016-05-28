@@ -4,3 +4,9 @@
 .settings/
 .project
 st
+
+venv/
+dist/
+build/
+*.spec
+*.pyc

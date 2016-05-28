@@ -6,26 +6,23 @@
 ################################################################
 
 export CDA_STORE="$BASHTOOLS_HOME/cdalias/alias.store"
-
-_CDAUTIL_DIR="$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export CDA_HASH=$(uuidgen)
+chmod 755 "$BASHTOOLS_HOME/cdalias/cdautil"
+export PATH="$BASHTOOLS_HOME/cdalias:$PATH"
 
 function __cdanav(){
-    runnable="$_CDAUTIL_DIR/cdautil/cda/run.py"
-    python $runnable -n ${@}
+    cdautil --cdalias=$CDA_HASH -n ${@}
 }
 
 function __cdamgr(){
-
-    runnable="$_CDAUTIL_DIR/cdautil/cda/run.py"
-    python $runnable ${@}
+    cdautil --cdalias=$CDA_HASH ${@}
 }
 
 function __cdadest(){
-
-    unset _CDAUTIL_DIR
     unset __cdanav
     unset __cdamgr
     unset __cdadest
+    unset CDA_HASH
 }
 
 function cd () {
@@ -39,9 +36,13 @@ function cd () {
 			echo "====================================="
 			echo ""
     		unset cd
-    		unset cdm
     		__cdadest
     		return
+    elif [[ ${path_provided} == "" ]]
+    	then
+    		builtin cd $path_provided
+    		return
+
     elif [[ ${path_provided:0:1} == "-" ]]
     	then
     		__cdamgr ${@}
@@ -77,18 +78,21 @@ function cd () {
     		return
     fi
 
-	alias_error_msg=""
 	# Check for alias and overwrite if path for alias is found
 	path_from_alias=$(__cdanav $path_provided)
+	show_err_msg=false
 	if [ "${path_from_alias}" = "-1" ]
 		then
-			alias_error_msg=" ✗ cd <alias>: $path_provided: Not an alias"
+			# CODE_STORE_NOT_FOUND
+			show_err_msg=true
 	elif [ "${path_from_alias}" = "-2" ]
 		then
-			alias_error_msg=" ✗ cd <alias>: $path_provided: Not an alias"
+			# CODE_ALIAS_NOT_FOUND
+			show_err_msg=true
 	elif [ "${path_from_alias}" = "-3" ]
 		then
-			alias_error_msg=" ✗ cd <alias>: $path_provided: Not an alias"
+			# CODE_PATH_NOT_VALID
+			show_err_msg=true
 	elif [ "${path_from_alias}" != "" ]
 		then
 			path_provided=$path_from_alias
@@ -102,13 +106,12 @@ function cd () {
         path_provided="${path_provided:0:$(( ${#path_provided} - 1 ))}"
     done
 
-
-
-	builtin cd $path_provided
+	builtin cd $path_provided > /dev/null 2>&1
 
 	# If builtin cd threw an error, show that path wasn't an alias either
 	if [ "$?" != "0" ]
 		then
+			alias_error_msg=" ✗ cd $path_provided: No such file, directory or alias"
 			echo $alias_error_msg
 	fi
 }

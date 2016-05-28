@@ -1,55 +1,70 @@
 import getopt
-import os
 import sys
 
+import os
 from commons import *
 from printer import *
 from util import CdaUtil
 
+VERSION="0.0.1.SNAPSHOT"
+APP_NAME="cdalias"
 
 
-def main():
+def main(protect):
+    # Get env vars
     store_file = os.getenv('CDA_STORE', None)
+    protect_hash = os.getenv('CDA_HASH',None)
+
+    # Check if caller is trusted
+    if protect_hash and ("--cdalias="+protect_hash in sys.argv):
+        protect.set_trusted_caller(True)
+    else:
+        return
+
     if not store_file:
         return CODE_STORE_NOT_FOUND
     else:
-        cda_util = CdaUtil(store_file)
+        cda_util = CdaUtil(store_file,APP_NAME,VERSION)
     path = None
     alias = None
+
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "n:hp:a:d:l", ["help", "path=", "alias=", "delete=", "list"])
+        opts, args = getopt.getopt(sys.argv[1:], "n:hp:a:d:l",
+                                   ["cdalias=", "help", "path=", "alias=", "delete=", "list"])
     except getopt.GetoptError:
-        sys.exit(2)
+        show_help(protect)
+        return
     for opt, arg in opts:
         if opt in ("-n"):
-            print (cda_util.navigate(arg))
-            exit()
+            if protect.allow_exec:
+                print (cda_util.navigate(arg))
+            return
         elif opt in ("-h", "--help"):
-            show_help()
-            exit()
+            show_help(protect)
+            return
         elif opt in ("-p", "--path"):
             path = arg
         elif opt in ("-a", "--alias"):
             alias = arg
         elif opt in ("-d", "--delete"):
-            cda_util.delete_alias(arg)
-            exit()
+            if protect.allow_exec:
+                cda_util.delete_alias(arg)
+            return
         elif opt in ("-l", "--list"):
-            cda_util.list()
-            exit()
-    if path or alias:
+            if protect.allow_exec:
+                cda_util.list()
+            return
+    if (path or alias) and protect.allow_exec:
         cda_util.create_alias(alias, path)
     else:
-        exit(2)
+        show_help(protect)
+        return
 
 
 
-def exit(code=0):
-    sys.exit(code)
-
-
-
-def show_help():
+def show_help(protect):
+    if not protect.allow_exec:
+        return
     print_help_h1("HELP: cda util")
 
     print_help_h2("Options")
@@ -79,8 +94,24 @@ def show_help():
 
 
 
+class Protector:
+    def __init__(self):
+        self.allow_exec = False
+
+
+
+    def allow_exec(self):
+        return self.allow_exec
+
+
+
+    def set_trusted_caller(self, trusted=False):
+        self.allow_exec = trusted
+
+
+
 if __name__ == "__main__":
     try:
-        main()
+        main(Protector())
     except KeyboardInterrupt:
         pass
