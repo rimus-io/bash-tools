@@ -7,6 +7,13 @@ cd $REL_PATH
 # Cleanup
 rm -rf build dist cdautil.spec
 
+# Check if virtualenv is installed
+CHECK_VENV="$(pip list | grep -i virtualenv)"
+if [ ! -n "${CHECK_VENV}" ]
+    then
+        sudo pip install virtualenv
+fi
+
 # Activate venv
 source venv/bin/activate
 
