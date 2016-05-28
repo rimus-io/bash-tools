@@ -12,6 +12,7 @@ CHECK_VENV="$(pip list | grep -i virtualenv)"
 if [ ! -n "${CHECK_VENV}" ]
     then
         sudo pip install virtualenv
+        virtualenv venv
 fi
 
 # Activate venv
