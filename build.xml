@@ -45,6 +45,9 @@
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${installer.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${installer.file}"/>
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${bootstrap.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}"/>
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${context.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${context.file}"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${installer.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${context.file}" perm="a+rx"/>
     </target>
 
 
@@ -75,7 +78,8 @@
     </target>
 
     <!-- cdalias -->
-    <target name="cdalias" depends="cdautil">
+    <target name="cdalias">
+    <!--<target name="cdalias" depends="cdautil">-->
         <!-- module file -->
         <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.module.file}"
               tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.module.file}"/>
@@ -86,8 +90,8 @@
         <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.store.file}"
               tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.store.file}"/>
         <!-- cdautil executable file -->
-        <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.proj.dir}${file.separator}${cdalias.exec.dist.dir}${file.separator}${cdalias.exec.file}"
-              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.file}"/>
+        <!--<copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.proj.dir}${file.separator}${cdalias.exec.dist.dir}${file.separator}${cdalias.exec.file}"-->
+              <!--tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.file}"/>-->
     </target>
 
     <!-- cdautil -->

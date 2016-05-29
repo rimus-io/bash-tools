@@ -29,8 +29,7 @@ fi
 pyinstaller -F --log-level CRITICAL --clean -p cda -n cdautil cda/run.py
 
 # Cleanup again
-rm -rf build
-#rm -rf build cdautil.spec
+rm -rf build cdautil.spec
 
 # Dectivate venv
 deactivate
