@@ -145,8 +145,7 @@ if grep -q "${bootstrap_patch_start}" ~/${bash_file}
         else
             _verbose "$step Source path mismatch!"
             # Get cleaned up bash file and save it into a temporary fle
-            temp_bash_file="tmp_file"
-#            temp_bash_file=$(mktemp /tmp/bash_tls_clean_start.XXXXXX)
+            temp_bash_file=$(mktemp /tmp/bash_tls_clean_start.XXXXXX)
             grep -iEv -e "^[ \n\r]{2,}$"  -e "${bootstrap_patch_start}" -e "(bash-tools([A-Z,a-z,0-9,/\\-_+.:|,])*bootstrap.sh)$" -e "${bootstrap_patch_end}" ~/${bash_file} | tee -a ${temp_bash_file} > /dev/null 2>&1
 
             # Cleanup empty lines
@@ -191,6 +190,7 @@ if grep -q "${bootstrap_patch_start}" ~/${bash_file}
             sudo cp ${temp_bash_file} ~/${bash_file}
             # Clean up
             rm ${temp_bash_file}
+            rm ${temp_bash_file}".bak"
             do_write_details=true
         fi
 else

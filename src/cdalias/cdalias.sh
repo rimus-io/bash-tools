@@ -1,14 +1,22 @@
 #!/bin/sh
 ################################################################
 #
-#   cdalias -  cd using aliases
+##{name:   cdalias
+##{vers:   0.0.1
+##{auth:   Rimas Krivickas
+##{aurl:   github.com/rimusdesign
+##{mail:   rimas@rimusgroup.co.uk
+#
+##{desc:   Extends capabilities of 'cd' command.
+##{desc:   To enable type 'cdalias.
+##{desc:   Allows assigning aliases to directories
+##{desc:   and navigating to them using aliases.
 #
 ################################################################
 
-export CDA_STORE="$BASHTOOLS_HOME/cdalias/alias.store"
-export CDA_HASH=$(uuidgen)
-chmod 755 "$BASHTOOLS_HOME/cdalias/cdautil"
-export PATH="$BASHTOOLS_HOME/cdalias:$PATH"
+export CDA_STORE="$BASHTOOLS_HOME/installed/cdalias/alias.store"
+export CDA_HASH="$(uuidgen)"
+export PATH="$BASHTOOLS_HOME/installed/cdalias:$PATH"
 
 function __cdanav(){
     cdautil --cdalias=$CDA_HASH -n ${@}
@@ -22,10 +30,13 @@ function __cdadest(){
     unset __cdanav
     unset __cdamgr
     unset __cdadest
-    unset CDA_HASH
+    CDA_ACTIVE=false
 }
 
-function cd () {
+##{fdes:   Navigates to specified directory.
+##{fdes:   Type 'cd -h' for full help, or 'cd -q' to quit.
+##{fpar:   Alias or directory to navigate to, or other options
+function cd ( ) {
 
 	path_provided="${@}"
 	 if [ "${path_provided}" = "-q" ]
@@ -116,12 +127,4 @@ function cd () {
 	fi
 }
 
-
-echo ""
-echo "====================================="
-echo "INFO: Entering 'cd <alias>' mode! "
-echo "    cd -q (will exit this mode)    "
-echo "    cd -h (for help)               "
-echo "====================================="
-echo ""
-
+export CDA_ACTIVE=true

@@ -1,22 +1,24 @@
 import getopt
-import sys
 
 import os
 from commons import *
 from printer import *
 from util import CdaUtil
 
-VERSION="0.0.1.SNAPSHOT"
-APP_NAME="cdalias"
+
+
+VERSION = "0.0.1.SNAPSHOT"
+APP_NAME = "cdalias"
+
 
 
 def main(protect):
     # Get env vars
     store_file = os.getenv('CDA_STORE', None)
-    protect_hash = os.getenv('CDA_HASH',None)
+    protect_hash = os.getenv('CDA_HASH', None)
 
     # Check if caller is trusted
-    if protect_hash and ("--cdalias="+protect_hash in sys.argv):
+    if protect_hash and ("--cdalias=" + protect_hash in sys.argv):
         protect.set_trusted_caller(True)
     else:
         return
@@ -24,7 +26,7 @@ def main(protect):
     if not store_file:
         return CODE_STORE_NOT_FOUND
     else:
-        cda_util = CdaUtil(store_file,APP_NAME,VERSION)
+        cda_util = CdaUtil(store_file, APP_NAME, VERSION)
     path = None
     alias = None
 

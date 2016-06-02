@@ -2,6 +2,7 @@
 
 # Navigate to the path so all file references work
 REL_PATH=${BASH_SOURCE%/*}
+
 cd $REL_PATH
 
 # Cleanup

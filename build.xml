@@ -36,28 +36,34 @@
         <tstamp>
             <format property="time" pattern="HH:mm:ss" locale="en"/>
         </tstamp>
-        <echo file="${distribution.dir}${file.separator}${root.package}${file.separator}${version.file}">${version.number}${line.separator}${date}${line.separator}${time}${line.separator}</echo>
+        <echo file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${version.file}">${version.number}${line.separator}${date}${line.separator}${time}${line.separator}</echo>
     </target>
 
 
     <!-- Installer -->
     <target name="installer">
-        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${installer.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${installer.file}"/>
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${bootstrap.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}"/>
-        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${context.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${context.file}"/>
-        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${installer.file}" perm="a+rx"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${installer.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${installer.file}"/>
+        <copy file="src/installer/main.cfg" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${mainconf.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${autocomplete.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${autocomplete.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${hook.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${hook.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${docgen.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${docgen.file}"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}" perm="a+rx"/>
-        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${context.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${installer.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${mainconf.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${autocomplete.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${hook.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${docgen.file}" perm="a+rx"/>
     </target>
 
 
     <!-- MODULES -->
-    <target name="modules" depends="cdalias" description="Declare all modules to be included here"/>
+    <target name="modules" depends="cdalias,quickadmin" description="Declare all modules to be included here"/>
     <!--<target name="modules" depends="ziri,testmodule,cdalias" description="Declare all modules to be included here"/>-->
 
     <!-- ziri -->
     <target name="ziri">
-        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${ziri.source.dir}">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${ziri.source.dir}">
             <fileset dir="${source.dir}${file.separator}${ziri.source.dir}"/>
         </copy>
     </target>
@@ -65,33 +71,36 @@
 
     <!-- cdrc -->
     <target name="cdrc">
-        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${cdrc.source.dir}">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdrc.source.dir}">
             <fileset dir="${source.dir}${file.separator}${cdrc.source.dir}"/>
         </copy>
     </target>
 
-    <!-- testmodule -->
-    <target name="testmodule">
-        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${testmodule.source.dir}">
-            <fileset dir="${source.dir}${file.separator}${testmodule.source.dir}"/>
+    <!-- quickadmin -->
+    <target name="quickadmin">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${quickadmin.source.dir}">
+            <fileset dir="${source.dir}${file.separator}${quickadmin.source.dir}"/>
         </copy>
     </target>
 
     <!-- cdalias -->
-    <target name="cdalias">
-    <!--<target name="cdalias" depends="cdautil">-->
+    <target name="cdalias" depends="cdautil">
         <!-- module file -->
         <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.module.file}"
-              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.module.file}"/>
-        <!-- hook file -->
-        <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${hook.file}"
-              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${hook.file}"/>
+              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.module.file}"/>
+        <!-- config file -->
+        <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${config.file}"
+              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdalias.source.dir}${file.separator}${config.file}"/>
+        <!-- autocomplete file -->
+        <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.autocomplete.file}"
+              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.autocomplete.file}"/>
         <!-- store file -->
         <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.store.file}"
-              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.store.file}"/>
+              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.store.file}"/>
         <!-- cdautil executable file -->
-        <!--<copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.proj.dir}${file.separator}${cdalias.exec.dist.dir}${file.separator}${cdalias.exec.file}"-->
-              <!--tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.file}"/>-->
+        <copy file="${source.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.proj.dir}${file.separator}${cdalias.exec.dist.dir}${file.separator}${cdalias.exec.file}"
+              tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.file}"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${cdalias.source.dir}${file.separator}${cdalias.exec.file}" perm="a+rx"/>
     </target>
 
     <!-- cdautil -->

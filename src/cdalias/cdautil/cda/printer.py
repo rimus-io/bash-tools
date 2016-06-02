@@ -4,6 +4,10 @@ import subprocess
 
 # Colours
 # http://misc.flogisoft.com/bash/tip_colors_and_formatting
+import sys
+
+
+
 class Colour:
     DEFAULT= '\033[39m'
     BLACK = '\033[30m'
@@ -112,6 +116,15 @@ BOX_DRAWINGS_LIGHT_DOWN_AND_RIGHT = u'\u250C'.encode('utf-8')
 BOX_DRAWINGS_LIGHT_DOWN_AND_LEFT = u'\u2510'.encode('utf-8')
 
 
+# Cursor control
+# https://en.wikipedia.org/wiki/ANSI_escape_code
+def clear_display():
+    sys.stdout.write("\033[2J")
+
+def set_cursor_top_left():
+    sys.stdout.write("\033[H")
+
+
 
 # Basic print
 def print_blank_line():
@@ -179,6 +192,8 @@ class templates:
 
     @staticmethod
     def __proj_header_default(proj_name, operation=None, version=None):
+        clear_display()
+        set_cursor_top_left()
         r_padding = 8
         screen_w = get_screen_width()
         if operation:
@@ -200,7 +215,8 @@ class templates:
         space_w += operation_label_w
         left_fill_w = LEFT_MARGIN
         right_fill_w = screen_w - (left_fill_w + space_w)
-        top_line = Colour.WHITE + str_line("_")+Colour.END + NEW_LINE
+        top_line = Colour.DARKGRAY + str_line("=")+Colour.END + NEW_LINE
+        top2_line = Colour.WHITE + str_line("_")+Colour.END + NEW_LINE
         title_line = ("%s %s%s" % (Colour.BG_DARKGRAY + str_symbol_times(" ", left_fill_w) + Colour.END,
                                    Colour.BG_WHITE + Colour.BLACK + " " + proj_name + " " + Colour.END
                                    + Colour.END, str_symbol_times(" ", space_w - proj_name_w - 3) +
@@ -228,7 +244,7 @@ class templates:
             bottom_line = Colour.DARKGRAY + str_symbol_times(BOX_DRAWINGS_LIGHT_HORIZONTAL, screen_w) + Colour.END
             bottom2_line = Colour.DARKGRAY + SOLID_BLOCK_FADE + str_symbol_times(" ", left_fill_w - 7) \
                            + LEFT_ONE_EIGHTH_BLOCK + Colour.END + Colour.GRAY + version + Colour.END + NEW_LINE
-        return top_line + title_line + subtitle_line + bottom_line + bottom2_line
+        return top_line + top2_line + title_line + subtitle_line + bottom_line + bottom2_line
 
 
 
@@ -413,7 +429,7 @@ def print_project_header(proj_name, operation=None, version=None):
 
 
 def print_project_footer_normal(text,icon=None):
-    print templates.proj_footer(text, icon)
+    print templates.proj_footer(text, icon,Colour.WHITE)
 
 def print_project_footer_warn(text):
     print templates.proj_footer(text, FILLED_FLAG_ICON, Colour.YELLOW)
