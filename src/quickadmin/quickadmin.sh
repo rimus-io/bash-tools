@@ -126,3 +126,50 @@ function breset(){
 
 	source ~/.bash_profile
 }
+
+#DEFAULT = '\033[39m'
+#    BLACK = '\033[30m'
+#    WHITE = '\033[97m'
+#    PURPLE = '\033[95m'
+#    CYAN = '\033[96m'
+#    DARKCYAN = '\033[36m'
+#    BLUE = '\033[34m'
+#    LIGHTBLUE = '\033[94m'
+#    GREEN = '\033[32m'
+#    LIGHTGREEN = '\033[92m'
+#    YELLOW = '\033[93m'
+#    RED = '\033[91m'
+#    BOLD = '\033[1m'
+#    UNDERLINE = '\033[4m'
+#    END = '\033[0m'
+#    FRAMED = '\033[51m'
+#    GRAY = '\033[37m'
+#    DARKGRAY = '\033[90m'
+#    BG_WHITE = '\033[107m'
+#    BG_BLACK = '\033[40m'
+#    BG_GRAY = '\033[47m'
+#    BG_DARKGRAY = '\033[100m'
+
+function changeps() {
+#HOSTNAME=Generals-Air.default
+#LOGNAME=development
+#USER=development
+# http://misc.flogisoft.com/bash/tip_colors_and_formatting
+
+	# Save old PS1
+	export OPS1=$PS1
+	PS1="\033[90m\h\033[0m \033[1m\033[97m\W\033[0m \u\$\033[0m \033[5m*\033[0m"
+}
+
+function resetps() {
+
+	if [ -z $OPS1 ]
+	then
+		echo "Nope"
+		return
+	fi
+
+		echo "Yep"
+	PS1=$OPS1
+	unset OPS1
+}

@@ -35,43 +35,29 @@ function _verbose() {
 }
 
 
-# Getting current directory
-root_location="$(pwd)/$(dirname $0)"
-version_info_file="$root_location/version.info"
+# Navigate to the path so all file references work
+REL_PATH=${BASH_SOURCE%/*}
+cd $REL_PATH
 
+
+# Getting current directory
+root_location=$(pwd)
+build_info_file="$root_location/build.info"
 
 # Prevent installation if it has been performed already
-if [ -f "$root_location/st" ]
+bashtools_installed=false
+bashtools_installed=$(grep -iE -e "installed=" "$root_location/main.cfg" | sed "s/installed=//")
+if [[ ${bashtools_installed} == true ]]
 then
     _verbose "You already have 'bash-tools' installed!"
     exit 1 # Exit with error
 fi
 
 
-# Setting version details from 'version.info' file if it exists
-version_info=
-release_date_info=
-release_time_info=
-if [[ -f ${version_info_file} ]]
-then
-    index=0
-    while read line
-    do
-        if [ ${index} -eq 0 ]
-        then
-            version_info=$line
-        fi
-        if [ ${index} -eq 1 ]
-        then
-            release_date_info=${line}
-        fi
-        if [ ${index} -eq 2 ]
-        then
-            release_time_info=${line}
-        fi
-        index=$((index+1))
-    done < ${version_info_file}
-fi
+# Setting version details from 'build.info' file if it exists
+version_info=$(grep -iE -e "version=" "$root_location/main.cfg" | sed "s/version=//")
+release_date_info=$(grep -iE -e "build_date=" ${build_info_file} | sed "s/build_date=//")
+release_time_info=$(grep -iE -e "build_time=" ${build_info_file} | sed "s/build_time=//")
 
 
 # Print out details
@@ -80,7 +66,7 @@ _verbose "
 
 Installing:     bash-tools"
 
-if [ -f "$version_info_file" ]
+if [ -f "$build_info_file" ]
 then
     _verbose ""
     _verbose "Version:        $version_info"
@@ -126,7 +112,7 @@ _verbose "$step Backed up '$bash_file' as '$bash_file_backup'."
 
 
 # Patch startup file to include bash-tools on login
-bootstrap_file="$root_location/bootstrap.sh"
+bootstrap_file=$(echo "$root_location" | sed "s/\/etc//")"/bootstrap.sh"
 bootstrap_patch_start="# ----------------------{ Including 'bash-tools' }-----------------------"
 bootstrap_patch_sources="source $bootstrap_file"
 bootstrap_patch_end="# -------------------------------- Enjoy! -------------------------------"
@@ -207,8 +193,8 @@ if [[ ${do_write_details} == true ]]
 fi
 
 # Write status file to mark successful installation
-echo $timestamp > "$root_location/st"
-
+echo "installed=true" >> "$root_location/main.cfg"
+echo "installed_on=$timestamp" >> "$root_location/main.cfg"
 
 # Print out success message
 _verbose "

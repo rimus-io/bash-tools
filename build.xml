@@ -36,7 +36,7 @@
         <tstamp>
             <format property="time" pattern="HH:mm:ss" locale="en"/>
         </tstamp>
-        <echo file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${version.file}">${version.number}${line.separator}${date}${line.separator}${time}${line.separator}</echo>
+        <echo file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${build.info.file}">${build.date.label}=${date}${line.separator}${build.time.label}=${time}${line.separator}</echo>
     </target>
 
 
@@ -58,7 +58,7 @@
 
 
     <!-- MODULES -->
-    <target name="modules" depends="cdalias,quickadmin" description="Declare all modules to be included here"/>
+    <target name="modules" depends="quickadmin,cdalias,dockradmin" description="Declare all modules to be included here"/>
     <!--<target name="modules" depends="ziri,testmodule,cdalias" description="Declare all modules to be included here"/>-->
 
     <!-- ziri -->
@@ -80,6 +80,13 @@
     <target name="quickadmin">
         <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${quickadmin.source.dir}">
             <fileset dir="${source.dir}${file.separator}${quickadmin.source.dir}"/>
+        </copy>
+    </target>
+
+    <!-- dockradmin -->
+    <target name="dockradmin">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${dockradmin.source.dir}">
+            <fileset dir="${source.dir}${file.separator}${dockradmin.source.dir}"/>
         </copy>
     </target>
 

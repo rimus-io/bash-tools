@@ -6,11 +6,6 @@ function _cd_autocomp_all_opts () {
 	COMPREPLY=( $( compgen -W "-h -q" -- "${cur}" ) )
 }
 
-function _cd_autocomp_default_opts () {
-
-	COMPREPLY=( $( compgen -o default -- "${cur}" ) )
-}
-
 
 function _cd_autocomp () {
 
@@ -34,16 +29,9 @@ function _cd_autocomp () {
 				return
 			fi
             ;;
-        *)
-			if [[ "${COMP_CWORD}" == 1 ]]
-			then
-				_cd_autocomp_default_opts
-				return
-			fi
-            ;;
     esac
 
 }
 
 
-complete -F _cd_autocomp cd
+complete -d -X '.[^./]*' -F _cd_autocomp cd

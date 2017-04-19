@@ -6,57 +6,42 @@
 ################################################################
 
 
+
 # Set 'BASHTOOLS_HOME' value
 export BASHTOOLS_HOME=$(dirname $BASH_SOURCE)
+
 
 # Activate doc generator
 source "${BASHTOOLS_HOME}/etc/docgen.sh"
 
 
+# Banner and info
+version=$(grep -iE -e "version=" "$BASHTOOLS_HOME/etc/main.cfg" | sed "s/version=//")
+banner=$(grep -iE -e "banner=" "$BASHTOOLS_HOME/etc/main.cfg" | sed "s/banner=//")
+banner_tmpl="\n \033[90m _ \033[0m\033[1m%s\033[0m \033[90m%"$((80 - (${#banner}+${#version}-2)))"s\033[0m\n"
+printf "${banner_tmpl}" "${banner}" "v. ${version}"
+printf "\033[34m_________________________________________________________________________\033[0m\n"
+printf "\033[90m                                                            bashtools -h \033[0m\n"
+printf "\033[90m‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\033[0m\n"
+unset version
+unset banner
+unset banner_tmpl
+
+
 # Read and set parameters from 'main.cfg'
 declare bashtools_develop=false # Declaring 'bashtools_develop' here to prevent undeclared var error messages
 declare -a module_list=()
-params_index=0
-while read param
-do
-    # Ignore blank lines
-    if [ ${#param} -ne 0 ]
-    then
-        # Ignore comments
-        first_char=${param:0:1}
-        if [ "$first_char" != "#" ]
-        then
-            if [ $params_index -eq 0 ]
-            then
-                # First parameter in 'main.cfg' file must be 'develop'
-                if [ ${param:0:7} = "develop" ]
-                then
-                    # Set 'bashtools_develop' flag value
-                    # Prefix 'bashtools_' is used to avoid name conflicts
-                    declare "bashtools_$param"
-                    params_index=$(( params_index + 1 ))
-                else
-                    echo "There seems to have been a problem parsing 'main.cfg' file"
-                    exit 1
-                fi
-            else
-                module_list[$params_index]="${param}"
-                params_index=$(( params_index + 1 ))
-            fi
-        fi
-        unset first_char
-    fi
-done < "$BASHTOOLS_HOME/etc/main.cfg"
-unset param
-unset params_index
+bashtools_develop=$(grep -iE -e "develop=" "$BASHTOOLS_HOME/etc/main.cfg" | sed "s/develop=//")
 
 
 # Check if installation has been performed before proceeding, but allow execution if in development mode
-if [ ! -f "$BASHTOOLS_HOME/etc/st" ]
+bashtools_installed=false
+bashtools_installed=$(grep -iE -e "installed=" "$BASHTOOLS_HOME/etc/main.cfg" | sed "s/installed=//")
+if [[ ${bashtools_installed} == false ]]
 then
     if $bashtools_develop
     then
-        echo "INFO: 'bash-tools' - Running in development mode."
+        echo "INFO: 'bash-tools' --> Running in development mode."
     else
         unset btr
         echo "Sorry, you have to install 'bash-tools' first."
@@ -64,21 +49,24 @@ then
     fi
 fi
 
+
+# Get list of modules
+module_list=($(ls $BASHTOOLS_HOME/installed/))
+
+
 # Register modules
 for module in ${module_list[@]}
 do
-    module_name=${module/"_0"/""}
-    module_name=${module_name/"_1"/""}
-    auto_source=false
-    # Only register aliases if the module can be found
-    if [[ -d "$BASHTOOLS_HOME/installed/$module_name" && -f "$BASHTOOLS_HOME/etc/hook.sh" ]]
+    module_name=${module}
+    is_enabled=false
+    is_enabled=$(grep -iE -e "enabled=" $BASHTOOLS_HOME/installed/$module_name/module.cfg | sed "s/enabled=//")
+    # Only bootstrap if enabled
+    if [[ ${is_enabled} == true ]]
     then
-        if [ "${module:$(( ${#module} - 1 )):${#module}}" = "1" ]
-            then
-                auto_source=true
-        fi
+        auto_source=false
+        auto_source=$(grep -iE -e "auto_source=" $BASHTOOLS_HOME/installed/$module_name/module.cfg | sed "s/auto_source=//")
         source "$BASHTOOLS_HOME/etc/hook.sh" $module_name $auto_source
-        echo "INFO: 'bash-tools' bootstrapping module: $module_name, auto source: $auto_source"
+        echo "INFO: 'bash-tools' --> Bootstrapping module: $module_name, auto source: $auto_source"
         # Enable autocompletion script if provided
         if [ -f "$BASHTOOLS_HOME/installed/$module_name/autocomplete.sh" ]
         then
@@ -92,12 +80,14 @@ do
     fi
 done
 docgen_shutdown
+unset bashtools_installed
 unset module
 unset module_list
 
 
 function btr() {
-    sh dev_clean_build.sh -fc
+    sh dev_clean_build.sh -fcv
+    exit
 }
 
 function _bt_help_menu(){
@@ -195,5 +185,6 @@ function bashtools(){
     return
 
 }
+
 
 bashtools "boot"

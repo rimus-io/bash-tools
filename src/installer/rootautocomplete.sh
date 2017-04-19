@@ -2,6 +2,7 @@
 
 # Some examples
 # http://www.linuxjournal.com/content/more-using-bash-complete-command
+# https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html#Programmable-Completion
 # https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion-Builtins.html
 # http://unix.stackexchange.com/questions/11376/what-does-double-dash-mean-also-known-as-bare-double-dash
 # https://github.com/scop/bash-completion/tree/master/completions
