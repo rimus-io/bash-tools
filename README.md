@@ -20,3 +20,6 @@ Clean build:
 
 1 - From project directory run this command 'sh dev_clean_build.sh -fc' (optionally add 'i' flag to do a clean install as well).
 2 - Then run 'sudo sh dist/bash-tools/etc/install.sh' (this step is not required if 'i' flag was used in the previous step).
+
+Or a one-liner:
+sh dev_clean_build.sh -fc; sudo sh dist/bash-tools/etc/install.sh; breset
