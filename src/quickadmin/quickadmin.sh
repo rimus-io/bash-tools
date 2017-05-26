@@ -95,7 +95,6 @@ function suallways(){
 	sutime "0"
 }
 
-
 ##{fdes:   Convenience command to save typing.
 ##{fdes:   Activates Python virtual environment.
 function venvactivate(){
@@ -125,6 +124,12 @@ function bcat(){
 function breset(){
 
 	source ~/.bash_profile
+}
+
+##{fdes:   A shortcut for 'breset'
+function br(){
+
+	breset
 }
 
 #DEFAULT = '\033[39m'
@@ -172,4 +177,17 @@ function resetps() {
 		echo "Yep"
 	PS1=$OPS1
 	unset OPS1
+}
+
+##{fdes:   Shortcut for 'ls -la'
+function lsa(){
+
+    # Check for input
+    input_dir=${1}
+    if [ -z ${input_dir} ]
+		then
+			input_dir=$(pwd)
+	fi
+
+	ls -la ${input_dir}
 }
