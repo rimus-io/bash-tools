@@ -48,17 +48,19 @@
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${autocomplete.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${autocomplete.file}"/>
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${hook.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${hook.file}"/>
         <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${docgen.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${docgen.file}"/>
+        <copy file="${source.dir}${file.separator}${installer.package}${file.separator}${utils.file}" tofile="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${utils.file}"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${bootstrap.file}" perm="a+rx"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${installer.file}" perm="a+rx"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${mainconf.file}" perm="a+rx"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${autocomplete.file}" perm="a+rx"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${hook.file}" perm="a+rx"/>
         <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${docgen.file}" perm="a+rx"/>
+        <chmod file="${distribution.dir}${file.separator}${root.package}${file.separator}${scripts.dir}${file.separator}${utils.file}" perm="a+rx"/>
     </target>
 
 
     <!-- MODULES -->
-    <target name="modules" depends="quickadmin,cdalias,dockradmin" description="Declare all modules to be included here"/>
+    <target name="modules" depends="quickadmin,cdalias,dockradmin,gradleadmin" description="Declare all modules to be included here"/>
     <!--<target name="modules" depends="ziri,testmodule,cdalias" description="Declare all modules to be included here"/>-->
 
     <!-- ziri -->
@@ -87,6 +89,13 @@
     <target name="dockradmin">
         <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${dockradmin.source.dir}">
             <fileset dir="${source.dir}${file.separator}${dockradmin.source.dir}"/>
+        </copy>
+    </target>
+
+    <!-- gradleadmin -->
+    <target name="gradleadmin">
+        <copy todir="${distribution.dir}${file.separator}${root.package}${file.separator}${distribution.modules.dir}${file.separator}${gradleadmin.source.dir}">
+            <fileset dir="${source.dir}${file.separator}${gradleadmin.source.dir}"/>
         </copy>
     </target>
 

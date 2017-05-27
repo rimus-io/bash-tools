@@ -14,6 +14,9 @@ export BASHTOOLS_HOME=$(dirname $BASH_SOURCE)
 # Activate doc generator
 source "${BASHTOOLS_HOME}/etc/docgen.sh"
 
+# Activate utils
+source "${BASHTOOLS_HOME}/etc/utils.sh"
+
 
 # Banner and info
 version=$(grep -iE -e "version=" "$BASHTOOLS_HOME/etc/main.cfg" | sed "s/version=//")
@@ -79,6 +82,7 @@ do
         fi
     fi
 done
+echo ""
 docgen_shutdown
 unset bashtools_installed
 unset module
