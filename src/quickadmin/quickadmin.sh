@@ -191,3 +191,27 @@ function lsa(){
 
 	ls -la ${input_dir}
 }
+
+
+##{fdes:   Removes IntelliJ project files if present
+##{fpar:   Project directory to be cleaned
+function ijclean(){
+
+    # Check for input
+    input_dir=${1}
+    if [ -z ${input_dir} ]
+		then
+			input_dir=$(pwd)
+	fi
+
+	if [ -f "${input_dir}/*.iml" ]
+        then
+            rm -f "${input_dir}/*.iml"
+    fi
+
+    if [ -d "${input_dir}/.idea" ]
+        then
+            rm -rf "${input_dir}/.idea"
+    fi
+
+}
