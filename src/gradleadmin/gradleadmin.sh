@@ -86,6 +86,16 @@ function grr(){
 
 }
 
+
+##{fdes:   Shortcut for 'gradle test'.
+function grt(){
+
+    clear
+    gr test
+
+}
+
+
 ##{fdes:   Shortcut for 'gradle init --type <DESIRED_TYPE>'.
 ##{fdes:   Simplified type shortcuts provided:
 ##{fdes:     app = java-application
