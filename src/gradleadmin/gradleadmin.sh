@@ -100,14 +100,21 @@ function grt(){
 ##{fdes:   Simplified type shortcuts provided:
 ##{fdes:     app = java-application
 ##{fdes:     lib = java-library
+##{frpr:   Desired project name (directory will get created)
 ##{fpar:   Desired project type.
 function grinit(){
 
+    # Set up directory
+    proj_dir=${1}
+    mkdir -p $proj_dir
+    cd $proj_dir
+
     # Validate and set input
-    gen_type=${1}
+    gen_type=${2}
     if [ -z ${gen_type} ]
 		then
-			gen_type="basic"
+			gen_type="java-library"
+#			gen_type="basic"
 	elif [ ${gen_type} == "app" ]
 	    then
 			gen_type="java-application"
@@ -122,5 +129,6 @@ function grinit(){
 	fi
 
     gradle init --type ${gen_type}
+    idea . || echo "IntelliJ IDEA command-line launcher is not set up"
 
 }

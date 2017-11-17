@@ -101,7 +101,7 @@ fi
 if $install
 then
     echo "Running a clean 'bash-tools' install..."
-    sudo sh dist/bash-tools/install.sh
+    sudo sh dist/bash-tools/etc/install.sh
 fi
 
 
